@@ -16,18 +16,76 @@ import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
 
+/**
+ * Контроллер для просмотра автомобилей пользователем.
+ * <p>
+ * Предоставляет функционал просмотра каталога доступных для аренды автомобилей
+ * с возможностями фильтрации и сортировки для пользователей с ролью ROLE_USER.
+ * <p>
+ * Поддерживаемые фильтры:
+ * <ul>
+ *     <li>По марке автомобиля</li>
+ *     <li>По году выпуска</li>
+ *     <li>По цвету</li>
+ *     <li>По городу расположения</li>
+ *     <li>По диапазону цены (минимальная и максимальная цена за день)</li>
+ * </ul>
+ * <p>
+ * Поддерживаемая сортировка:
+ * <ul>
+ *     <li>По умолчанию (без сортировки)</li>
+ *     <li>По возрастанию цены</li>
+ *     <li>По убыванию цены</li>
+ * </ul>
+ * <p>
+ * Автомобили со статусом MAINTENANCE (на обслуживании) скрыты от пользователей.
+ *
+ * @author ИжДрайв
+ * @version 1.0
+ */
 @Controller
 @RequestMapping("/user/cars")
 public class UserCarController {
 
+    /**
+     * Сервис для работы с автомобилями.
+     */
     private final CarService carService;
+
+    /**
+     * Сервис для работы с марками автомобилей.
+     */
     private final BrandService brandService;
 
+    /**
+     * Конструктор контроллера автомобилей пользователя.
+     *
+     * @param carService   сервис для работы с автомобилями
+     * @param brandService сервис для работы с марками
+     */
     public UserCarController(CarService carService, BrandService brandService) {
         this.carService = carService;
         this.brandService = brandService;
     }
 
+    /**
+     * Отображает список автомобилей с поддержкой фильтрации и сортировки.
+     * <p>
+     * Автомобили со статусом MAINTENANCE скрыты от пользователей.
+     * Поддерживается фильтрация по марке, году, цвету, городу и диапазону цен.
+     * Доступна сортировка по цене (возрастание/убывание).
+     *
+     * @param sortOrder порядок сортировки (default, priceAsc, priceDesc)
+     * @param brandId   идентификатор марки для фильтрации
+     * @param year      год выпуска для фильтрации
+     * @param color     цвет автомобиля для фильтрации
+     * @param city      город расположения для фильтрации
+     * @param minPrice  минимальная цена за день в рублях
+     * @param maxPrice  максимальная цена за день в рублях
+     * @param model     модель для передачи данных в представление
+     * @param user      аутентифицированный пользователь
+     * @return имя шаблона user/cars/list
+     */
     @GetMapping
     public String listCars(
             @RequestParam(name = "sortOrder", required = false, defaultValue = "default") String sortOrder,

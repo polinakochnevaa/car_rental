@@ -9,25 +9,77 @@ import org.springframework.web.bind.annotation.*;
 import java.time.LocalDate;
 import java.time.Period;
 
+/**
+ * Контроллер для аутентификации и регистрации пользователей.
+ * <p>
+ * Обрабатывает запросы на отображение форм входа и регистрации,
+ * а также обработку данных регистрации новых пользователей.
+ * <p>
+ * Функционал регистрации включает валидацию:
+ * <ul>
+ *     <li>Возраста (не менее 18 лет)</li>
+ *     <li>Email (обязательное поле, уникальность)</li>
+ *     <li>Пароля (минимум 8 символов, цифры, заглавные буквы, спецсимволы)</li>
+ *     <li>Телефона (формат +7XXXXXXXXXX, уникальность)</li>
+ *     <li>Документов (серия и номер паспорта, водительского удостоверения)</li>
+ *     <li>ФИО (только кириллица)</li>
+ * </ul>
+ * <p>
+ * Все новые пользователи регистрируются с ролью ROLE_USER.
+ *
+ * @author ИжДрайв
+ * @version 1.0
+ */
 @Controller
 public class AuthController {
 
+    /**
+     * Сервис для работы с пользователями.
+     */
     private final UserService userService;
 
+    /**
+     * Конструктор контроллера аутентификации.
+     *
+     * @param userService сервис для работы с пользователями
+     */
     public AuthController(UserService userService) {
         this.userService = userService;
     }
 
+    /**
+     * Проверяет, содержит ли строка только символы кириллицы.
+     *
+     * @param value проверяемая строка
+     * @return true, если строка содержит только кириллицу, пробелы и дефисы
+     */
     private boolean isCyrillic(String value) {
         return value != null && value.matches("^[А-ЯЁа-яё\\s-]+$");
     }
 
+    /**
+     * Отображает форму регистрации нового пользователя.
+     *
+     * @param model модель для передачи данных в представление
+     * @return имя шаблона auth/register.html
+     */
     @GetMapping("/register")
     public String showRegistrationForm(Model model) {
         model.addAttribute("user", new User());
         return "auth/register";  // шаблон auth/register.html
     }
 
+    /**
+     * Обрабатывает регистрацию нового пользователя.
+     * <p>
+     * Выполняет полную валидацию всех полей пользователя:
+     * возраста, email, пароля, телефона, документов, ФИО.
+     * При успешной регистрации создает пользователя с ролью ROLE_USER.
+     *
+     * @param user  данные регистрируемого пользователя
+     * @param model модель для передачи сообщений об ошибках
+     * @return перенаправление на страницу логина при успехе или форму регистрации при ошибке
+     */
     @PostMapping("/register")
     public String registerUser(@ModelAttribute User user, Model model) {
         if (user.getBirthDate() == null) {
@@ -105,6 +157,18 @@ public class AuthController {
         return "redirect:/login?registered";
     }
 
+    /**
+     * Отображает форму входа в систему.
+     * <p>
+     * Обрабатывает различные параметры запроса для отображения
+     * соответствующих сообщений пользователю.
+     *
+     * @param error      параметр, указывающий на ошибку аутентификации
+     * @param logout     параметр, указывающий на успешный выход из системы
+     * @param registered параметр, указывающий на успешную регистрацию
+     * @param model      модель для передачи сообщений в представление
+     * @return имя шаблона auth/login.html
+     */
     @GetMapping("/login")
     public String showLoginForm(@RequestParam(value = "error", required = false) String error,
                                 @RequestParam(value = "logout", required = false) String logout,

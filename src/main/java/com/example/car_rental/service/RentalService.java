@@ -12,31 +12,95 @@ import org.springframework.transaction.annotation.Transactional;
 import java.time.LocalDateTime;
 import java.util.List;
 
+/**
+ * Сервис для управления арендами автомобилей.
+ * <p>
+ * Предоставляет бизнес-логику для работы с арендами, включая:
+ * <ul>
+ *     <li>Создание новой аренды с резервированием автомобиля (статус PENDING_PAYMENT)</li>
+ *     <li>Подтверждение оплаты (перевод аренды в статус PAID, автомобиля - в RENTED)</li>
+ *     <li>Отмену аренды (возврат автомобиля в статус AVAILABLE)</li>
+ *     <li>Автоматическую отмену неоплаченных аренд через 5 минут</li>
+ *     <li>Получение списка аренд клиента и всех аренд для администратора</li>
+ * </ul>
+ * <p>
+ * Статусы аренды: PENDING_PAYMENT (ожидает оплаты), PAID (оплачена), CANCELLED (отменена).
+ * <p>
+ * Фоновая задача (@Scheduled) каждую минуту проверяет неоплаченные аренды
+ * и автоматически отменяет те, что старше 5 минут, освобождая зарезервированные автомобили.
+ *
+ * @author ИжДрайв
+ * @version 1.0
+ */
 @Service
 public class RentalService {
 
+    /**
+     * Репозиторий для работы с арендами
+     */
     private final RentalRepository rentalRepository;
+
+    /**
+     * Репозиторий для работы с пользователями
+     */
     private final UserRepository userRepository;
+
+    /**
+     * Сервис для работы с автомобилями
+     */
     private final CarService carService;
 
+    /**
+     * Конструктор сервиса аренды.
+     *
+     * @param rentalRepository репозиторий аренд
+     * @param userRepository репозиторий пользователей
+     * @param carService сервис автомобилей
+     */
     public RentalService(RentalRepository rentalRepository, UserRepository userRepository, CarService carService) {
         this.rentalRepository = rentalRepository;
         this.userRepository = userRepository;
         this.carService = carService;
     }
 
+    /**
+     * Возвращает список всех аренд в системе.
+     *
+     * @return список всех аренд
+     */
     public List<Rental> getAllRentals() {
         return rentalRepository.findAll();
     }
 
+    /**
+     * Возвращает список аренд клиента по email с сортировкой по дате создания (от новых к старым).
+     *
+     * @param email email клиента
+     * @return список аренд клиента
+     */
     public List<Rental> getRentalsByClientEmail(String email) {
         return rentalRepository.findByClient_EmailOrderByCreatedAtDesc(email);
     }
 
+    /**
+     * Находит аренду по ID.
+     *
+     * @param id ID аренды
+     * @return объект аренды или null, если не найдена
+     */
     public Rental getRentalById(Long id) {
         return rentalRepository.findById(id).orElse(null);
     }
 
+    /**
+     * Создает новую аренду для указанного пользователя.
+     * Устанавливает статус аренды PENDING_PAYMENT и резервирует автомобиль (статус RESERVED).
+     *
+     * @param rental объект аренды для создания
+     * @param username email пользователя (используется как username)
+     * @return созданная аренда
+     * @throws IllegalArgumentException если пользователь не найден
+     */
     @Transactional
     public Rental createRental(Rental rental, String username) {
         User client = userRepository.findByEmail(username);
@@ -56,6 +120,12 @@ public class RentalService {
         return rentalRepository.save(rental);
     }
 
+    /**
+     * Подтверждает оплату аренды.
+     * Переводит статус аренды в PAID и статус автомобиля в RENTED.
+     *
+     * @param rentalId ID аренды для подтверждения оплаты
+     */
     @Transactional
     public void confirmPayment(Long rentalId) {
         Rental rental = rentalRepository.findById(rentalId).orElseThrow();
@@ -68,6 +138,14 @@ public class RentalService {
         rentalRepository.save(rental);
     }
 
+    /**
+     * Отменяет аренду и освобождает автомобиль.
+     * Для неоплаченных аренд (PENDING_PAYMENT) - полностью удаляет запись из БД.
+     * Для оплаченных аренд (PAID) - устанавливает статус CANCELLED.
+     * В обоих случаях возвращает автомобиль в статус AVAILABLE.
+     *
+     * @param rentalId ID аренды для отмены
+     */
     @Transactional
     public void cancelRental(Long rentalId) {
         Rental rental = rentalRepository.findById(rentalId).orElseThrow();
@@ -88,8 +166,12 @@ public class RentalService {
         }
     }
 
-    // Проверка неоплаченных аренду старше 5 минут, сброс статусов
-    @Scheduled(fixedDelay = 60000) // каждую минуту
+    /**
+     * Автоматически проверяет и отменяет неоплаченные аренды старше 5 минут.
+     * Запускается каждую минуту как фоновая задача (@Scheduled).
+     * Для каждой просроченной аренды освобождает зарезервированный автомобиль.
+     */
+    @Scheduled(fixedDelay = 60000)
     @Transactional
     public void checkExpiredPendingRentals() {
         LocalDateTime now = LocalDateTime.now();

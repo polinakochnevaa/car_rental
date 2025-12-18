@@ -14,18 +14,58 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
+/**
+ * Контроллер для управления профилем пользователя.
+ * <p>
+ * Предоставляет функционал для просмотра и редактирования личных данных
+ * текущего аутентифицированного пользователя (ROLE_USER).
+ * <p>
+ * Пользователь может обновить следующие данные:
+ * <ul>
+ *     <li>ФИО (фамилия, имя, отчество)</li>
+ *     <li>Телефон</li>
+ *     <li>Паспортные данные (серия и номер)</li>
+ *     <li>Водительское удостоверение (серия и номер)</li>
+ * </ul>
+ * <p>
+ * Email, дата рождения, пароль и роль НЕ могут быть изменены через этот контроллер.
+ * Включает обработку ошибок уникальности данных (телефон, паспорт, водительское удостоверение).
+ *
+ * @author ИжДрайв
+ * @version 1.0
+ */
 @Controller
 @RequestMapping("/user/profile")
 public class UserProfileController {
 
+    /**
+     * Сервис для работы с пользователями.
+     */
     private final UserService userService;
+
+    /**
+     * Репозиторий для работы с пользователями.
+     */
     private final UserRepository userRepository;
 
+    /**
+     * Конструктор контроллера профиля пользователя.
+     *
+     * @param userService    сервис для работы с пользователями
+     * @param userRepository репозиторий для работы с пользователями
+     */
     public UserProfileController(UserService userService, UserRepository userRepository) {
         this.userService = userService;
         this.userRepository = userRepository;
     }
 
+    /**
+     * Отображает форму редактирования профиля текущего пользователя.
+     *
+     * @param model       модель для передачи данных в представление
+     * @param userDetails данные аутентифицированного пользователя
+     * @return имя шаблона user/profile/my
+     */
     @GetMapping("/my")
     public String profileForm(Model model, @AuthenticationPrincipal UserDetails userDetails) {
         User user = userService.getUserByEmail(userDetails.getUsername());
@@ -33,6 +73,18 @@ public class UserProfileController {
         return "user/profile/my";
     }
 
+    /**
+     * Обрабатывает обновление профиля пользователя.
+     * <p>
+     * Обновляет только разрешенные поля: ФИО, телефон, паспортные данные
+     * и данные водительского удостоверения. Email, дата рождения, пароль
+     * и роль НЕ изменяются через этот метод.
+     *
+     * @param user                 данные для обновления профиля
+     * @param userDetails          данные аутентифицированного пользователя
+     * @param redirectAttributes   атрибуты для передачи flash-сообщений
+     * @return перенаправление на страницу профиля
+     */
     @PostMapping
     public String updateProfile(@ModelAttribute User user, @AuthenticationPrincipal UserDetails userDetails,
                                RedirectAttributes redirectAttributes) {
@@ -68,6 +120,15 @@ public class UserProfileController {
         }
     }
 
+    /**
+     * Извлекает понятное пользователю сообщение об ошибке из исключения.
+     * <p>
+     * Анализирует текст исключения DataIntegrityViolationException
+     * и возвращает соответствующее пользовательское сообщение.
+     *
+     * @param e исключение нарушения целостности данных
+     * @return понятное пользователю сообщение об ошибке
+     */
     private String getErrorMessage(DataIntegrityViolationException e) {
         String message = e.getMessage().toLowerCase();
 
