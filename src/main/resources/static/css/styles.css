@@ -1,0 +1,414 @@
+/* ==================== УДМУРТСКИЙ СТИЛЬ (ИжДрайв) ==================== */
+:root {
+    --primary: #DC143C;
+    --primary-dark: #B01030;
+    --text-dark: #1a1a1a;
+    --text-light: #6b7280;
+    --border: #e5e7eb;
+    --background: #f9fafb;
+    --white: #ffffff;
+    --success: #10b981;
+    --warning: #f59e0b;
+    --danger: #ef4444;
+}
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+    background-color: var(--background);
+    color: var(--text-dark);
+    line-height: 1.6;
+}
+
+.container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 2rem;
+}
+
+/* ==================== НАВИГАЦИЯ ==================== */
+.navbar {
+    background-color: var(--white) !important;
+    border-bottom: 1px solid var(--border);
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+}
+
+.navbar-brand {
+    font-weight: 600;
+    color: var(--primary) !important;
+    font-size: 1.25rem;
+}
+
+.nav-link {
+    color: var(--text-dark) !important;
+    font-weight: 500;
+    padding: 0.5rem 1rem !important;
+}
+
+.nav-link:hover,
+.nav-link.active {
+    color: var(--primary) !important;
+}
+
+/* ==================== КАРТОЧКИ ==================== */
+.card {
+    background: var(--white);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+    margin-bottom: 1.5rem;
+}
+
+.card-header {
+    background-color: var(--white);
+    border-bottom: 1px solid var(--border);
+    padding: 1.25rem 1.5rem;
+    font-weight: 600;
+    font-size: 1.125rem;
+}
+
+.card-body {
+    padding: 1.5rem;
+}
+
+/* ==================== КНОПКИ ==================== */
+.btn {
+    border-radius: 6px;
+    padding: 0.625rem 1.25rem;
+    font-weight: 500;
+    border: none;
+    cursor: pointer;
+    font-size: 0.9375rem;
+}
+
+.btn-primary {
+    background-color: var(--primary);
+    color: var(--white);
+}
+
+.btn-primary:hover {
+    background-color: var(--primary-dark);
+}
+
+/* Удмуртские стили кнопок с анимациями */
+.btn-udmurt-primary {
+    background-color: var(--primary);
+    color: white;
+    border: none;
+    padding: 0.625rem 1.5rem;
+    border-radius: 6px;
+    font-weight: 500;
+    transition: all 0.3s ease;
+    text-decoration: none;
+    display: inline-block;
+}
+
+.btn-udmurt-primary:hover {
+    background-color: var(--primary-dark);
+    color: white;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(220, 20, 60, 0.3);
+}
+
+.btn-udmurt-outline {
+    background-color: transparent;
+    color: var(--text-dark);
+    border: 2px solid var(--text-dark);
+    padding: 0.625rem 1.5rem;
+    border-radius: 6px;
+    font-weight: 500;
+    transition: all 0.3s ease;
+    text-decoration: none;
+    display: inline-block;
+}
+
+.btn-udmurt-outline:hover {
+    background-color: var(--text-dark);
+    color: white;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(26, 26, 26, 0.2);
+}
+
+.btn-success {
+    background-color: var(--success);
+    color: var(--white);
+}
+
+.btn-success:hover {
+    background-color: #059669;
+}
+
+.btn-warning {
+    background-color: var(--warning);
+    color: var(--white);
+}
+
+.btn-warning:hover {
+    background-color: #d97706;
+}
+
+.btn-danger {
+    background-color: var(--danger);
+    color: var(--white);
+}
+
+.btn-danger:hover {
+    background-color: #dc2626;
+}
+
+.btn-secondary {
+    background-color: #6b7280;
+    color: var(--white);
+}
+
+.btn-secondary:hover {
+    background-color: #4b5563;
+}
+
+.btn-outline-secondary {
+    background-color: transparent;
+    border: 1px solid var(--border);
+    color: var(--text-dark);
+}
+
+.btn-outline-secondary:hover {
+    background-color: var(--background);
+}
+
+/* ==================== ТАБЛИЦЫ ==================== */
+.table {
+    background: var(--white);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    overflow: hidden;
+}
+
+.table thead th {
+    background-color: var(--background);
+    color: var(--text-dark);
+    font-weight: 600;
+    padding: 0.875rem 1rem;
+    border-bottom: 2px solid var(--border);
+    text-transform: none;
+    font-size: 0.875rem;
+}
+
+.table tbody td {
+    padding: 0.875rem 1rem;
+    vertical-align: middle;
+    border-bottom: 1px solid var(--border);
+}
+
+.table tbody tr:last-child td {
+    border-bottom: none;
+}
+
+.table tbody tr:hover {
+    background-color: var(--background);
+}
+
+.table-striped tbody tr:nth-of-type(odd) {
+    background-color: rgba(0, 0, 0, 0.02);
+}
+
+.table-bordered {
+    border: 1px solid var(--border);
+}
+
+.table-dark thead th {
+    background-color: var(--text-dark);
+    color: var(--white);
+}
+
+/* ==================== ФОРМЫ ==================== */
+.form-control,
+.form-select {
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    padding: 0.625rem 0.875rem;
+    font-size: 0.9375rem;
+    background-color: var(--white);
+}
+
+.form-control:focus,
+.form-select:focus {
+    border-color: var(--primary);
+    outline: none;
+    box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1);
+}
+
+.form-label {
+    font-weight: 500;
+    color: var(--text-dark);
+    margin-bottom: 0.5rem;
+    font-size: 0.9375rem;
+}
+
+.input-group-text {
+    background-color: var(--background);
+    border: 1px solid var(--border);
+    color: var(--text-light);
+}
+
+/* ==================== БЕЙДЖИ ==================== */
+.badge {
+    padding: 0.375rem 0.75rem;
+    border-radius: 4px;
+    font-weight: 500;
+    font-size: 0.875rem;
+}
+
+.text-bg-success {
+    background-color: var(--success) !important;
+    color: var(--white) !important;
+}
+
+.text-bg-warning {
+    background-color: var(--warning) !important;
+    color: var(--white) !important;
+}
+
+.text-bg-danger {
+    background-color: var(--danger) !important;
+    color: var(--white) !important;
+}
+
+.text-bg-info {
+    background-color: #3b82f6 !important;
+    color: var(--white) !important;
+}
+
+.text-bg-secondary {
+    background-color: #6b7280 !important;
+    color: var(--white) !important;
+}
+
+/* ==================== АЛЕРТЫ ==================== */
+.alert {
+    border: 1px solid;
+    border-radius: 6px;
+    padding: 0.875rem 1.125rem;
+    font-size: 0.9375rem;
+}
+
+.alert-success {
+    background-color: #ecfdf5;
+    border-color: #a7f3d0;
+    color: #065f46;
+}
+
+.alert-danger {
+    background-color: #fef2f2;
+    border-color: #fecaca;
+    color: #991b1b;
+}
+
+/* ==================== ЗАГОЛОВКИ ==================== */
+h1, h2, h3, h4, h5, h6 {
+    font-weight: 600;
+    color: var(--text-dark);
+    margin-bottom: 1rem;
+}
+
+h1 { font-size: 1.875rem; }
+h2 { font-size: 1.5rem; }
+h3 { font-size: 1.25rem; }
+
+/* ==================== СТРАНИЦА ВХОДА ==================== */
+.auth-container {
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 2rem;
+    background-color: var(--background);
+}
+
+.auth-card {
+    max-width: 420px;
+    width: 100%;
+}
+
+.auth-card .card-header {
+    text-align: center;
+    background-color: var(--primary);
+    color: var(--white);
+    border-bottom: none;
+}
+
+/* ==================== КАРТОЧКИ АВТОМОБИЛЕЙ ==================== */
+.car-card {
+    height: 100%;
+}
+
+.car-card .card-title {
+    font-size: 1.125rem;
+    font-weight: 600;
+    color: var(--text-dark);
+}
+
+.car-card .price {
+    font-size: 1.5rem;
+    font-weight: 600;
+    color: var(--primary);
+}
+
+/* ==================== DASHBOARD ==================== */
+.dashboard-card {
+    background-color: var(--white);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 1.5rem;
+    margin-bottom: 1.5rem;
+}
+
+.dashboard-card h3 {
+    font-size: 1.125rem;
+    font-weight: 600;
+    margin-bottom: 0.75rem;
+}
+
+.dashboard-card p {
+    color: var(--text-light);
+    margin-bottom: 1rem;
+}
+
+/* ==================== УТИЛИТЫ ==================== */
+.text-muted {
+    color: var(--text-light) !important;
+}
+
+.shadow-sm {
+    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
+}
+
+.shadow {
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+}
+
+.shadow-lg {
+    box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+}
+
+/* ==================== АДАПТИВНОСТЬ ==================== */
+@media (max-width: 768px) {
+    .container {
+        padding: 1rem;
+    }
+
+    .card-body {
+        padding: 1rem;
+    }
+
+    .table {
+        font-size: 0.875rem;
+    }
+
+    h1 { font-size: 1.5rem; }
+    h2 { font-size: 1.25rem; }
+}

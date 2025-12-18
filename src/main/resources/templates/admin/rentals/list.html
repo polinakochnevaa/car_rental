@@ -1,0 +1,189 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="ru">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Аренды — Администрирование</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet" />
+    <link rel="stylesheet" th:href="@{/css/styles.css}" />
+</head>
+<body>
+<nav class="navbar navbar-expand-lg">
+    <div class="container">
+        <a class="navbar-brand d-flex align-items-center" th:href="@{/}">
+            <img th:src="@{/images/logos/Logo_red.svg}" alt="ИжДрайв" style="height: 40px; margin-right: 12px;" />
+            <span style="color: var(--primary); font-weight: 600; font-size: 1.25rem;">ИжДрайв</span>
+        </a>
+        <div class="navbar-nav">
+            <a class="nav-link" th:href="@{/}">Главная</a>
+            <a class="nav-link" th:href="@{/admin/brands}">Марки</a>
+            <a class="nav-link" th:href="@{/admin/models}">Модели</a>
+            <a class="nav-link" th:href="@{/admin/cars}">Автомобили</a>
+            <a class="nav-link active" th:href="@{/admin/rentals}">Аренды</a>
+            <a class="nav-link" th:href="@{/admin/users}">Пользователи</a>
+            <a class="nav-link" th:href="@{/logout}">Выход</a>
+        </div>
+    </div>
+</nav>
+
+<div class="container mt-4">
+    <!-- Header с заголовком -->
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <div>
+            <h1 style="color: var(--primary); font-weight: 600;">Аренды</h1>
+        </div>
+    </div>
+
+    <!-- Фильтры -->
+    <div class="card border-0 shadow-sm mb-4">
+        <div class="card-body">
+            <form id="filterForm" method="get" th:action="@{/admin/rentals}">
+                <div class="row g-3 align-items-end">
+                    <div class="col-md-3">
+                        <label class="form-label fw-semibold" style="color: var(--primary);">
+                            Поиск по гос. номеру
+                        </label>
+                        <input type="text" id="plateInput" name="plate" class="form-control" placeholder="А123АА18" th:value="${plate}" />
+                    </div>
+                    <div class="col-md-3">
+                        <label class="form-label fw-semibold" style="color: var(--primary);">
+                            Поиск по email
+                        </label>
+                        <input type="text" id="emailInput" name="email" class="form-control" placeholder="example@mail.ru" th:value="${email}" />
+                    </div>
+                    <div class="col-md-4">
+                        <label class="form-label fw-semibold" style="color: var(--primary);">
+                            Фильтр по статусу
+                        </label>
+                        <select id="statusFilter" name="statusFilter" class="form-select">
+                            <option value="" th:selected="${statusFilter == ''}">Все статусы</option>
+                            <option value="PENDING_PAYMENT" th:selected="${statusFilter == 'PENDING_PAYMENT'}">Ожидает оплаты</option>
+                            <option value="PAID" th:selected="${statusFilter == 'PAID'}">Оплачено</option>
+                            <option value="CANCELLED" th:selected="${statusFilter == 'CANCELLED'}">Аренда отменена</option>
+                        </select>
+                    </div>
+                    <div class="col-md-2">
+                        <a th:href="@{/admin/rentals}" class="btn btn-udmurt-outline w-100">Сбросить</a>
+                    </div>
+                </div>
+                <input type="hidden" name="sortField" th:value="${sortField}" />
+                <input type="hidden" name="sortDir" th:value="${sortDir}" />
+            </form>
+        </div>
+    </div>
+
+    <!-- Таблица аренд -->
+    <div class="card border-0 shadow-sm">
+        <div class="card-body p-0">
+            <div class="table-responsive">
+                <table class="table table-hover align-middle mb-0">
+                    <thead style="background-color: #f8f9fa;">
+                        <tr>
+                            <th class="border-0 py-2 px-3" style="width: 15%; font-size: 0.9rem;">
+                                <span style="color: var(--text-dark); font-weight: 600;">Автомобиль</span>
+                            </th>
+                            <th class="border-0 py-2 px-3" style="width: 10%; font-size: 0.9rem;">
+                                <span style="color: var(--text-dark); font-weight: 600;">Номер</span>
+                            </th>
+                            <th class="border-0 py-2 px-3" style="width: 12%; font-size: 0.9rem;">
+                                <span style="color: var(--text-dark); font-weight: 600;">Клиент</span>
+                            </th>
+                            <th class="border-0 py-2 px-3" style="width: 15%; font-size: 0.9rem;">
+                                <span style="color: var(--text-dark); font-weight: 600;">Email</span>
+                            </th>
+                            <th class="border-0 py-2 px-3" style="width: 18%; font-size: 0.9rem;">
+                                <span style="color: var(--text-dark); font-weight: 600;">Период аренды</span>
+                            </th>
+                            <th class="border-0 py-2 px-3" style="width: 10%; font-size: 0.9rem;">
+                                <span style="color: var(--text-dark); font-weight: 600;">Сумма</span>
+                            </th>
+                            <th class="border-0 py-2 px-3" style="width: 10%; font-size: 0.9rem;">
+                                <span style="color: var(--text-dark); font-weight: 600;">Статус</span>
+                            </th>
+                            <th class="border-0 py-2 px-3 text-end" style="width: 10%; font-size: 0.9rem;">
+                                <span style="color: var(--text-dark); font-weight: 600;">Действия</span>
+                            </th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr th:each="rental, iterStat : ${rentals}" style="border-bottom: 1px solid #e9ecef;">
+                            <td class="px-3 py-2" style="font-size: 0.85rem;">
+                                <span style="font-weight: 500;" th:text="${rental.car.brand.name + ' ' + rental.car.model.name}">Автомобиль</span>
+                            </td>
+                            <td class="px-3 py-2" style="font-size: 0.85rem;">
+                                <span style="font-weight: 500;" th:text="${rental.car.licensePlate}">А123АА18</span>
+                            </td>
+                            <td class="px-3 py-2" style="font-size: 0.85rem;">
+                                <span style="font-weight: 500;" th:text="${rental.client.lastName + ' ' + rental.client.firstName}">Клиент</span>
+                            </td>
+                            <td class="px-3 py-2" style="font-size: 0.85rem;">
+                                <span style="font-weight: 500; color: var(--text-dark);" th:text="${rental.client.email}">email@example.com</span>
+                            </td>
+                            <td class="px-3 py-2" style="font-size: 0.85rem;">
+                                <span style="font-weight: 500;" th:text="${#temporals.format(rental.startDate, 'dd.MM.yyyy')} + ' - ' + ${#temporals.format(rental.endDate, 'dd.MM.yyyy')}">01.01.2024 - 05.01.2024</span>
+                            </td>
+                            <td class="px-3 py-2" style="font-size: 0.85rem;">
+                                <span style="font-weight: 500; color: var(--primary);" th:text="${rental.totalPrice != null ? #numbers.formatDecimal(rental.totalPrice / 100.0, 1, 2) + ' ₽' : '—'}">3000 ₽</span>
+                            </td>
+                            <td class="px-3 py-2" style="font-size: 0.85rem;">
+                                <span th:switch="${rental.status}">
+                                    <span th:case="'PENDING_PAYMENT'" class="badge" style="background-color: #ffc107; color: white; font-size: 0.75rem;">Ожидает оплаты</span>
+                                    <span th:case="'PAID'" class="badge" style="background-color: #28a745; color: white; font-size: 0.75rem;">Оплачено</span>
+                                    <span th:case="'CANCELLED'" class="badge" style="background-color: #dc3545; color: white; font-size: 0.75rem;">Аренда отменена</span>
+                                    <span th:case="*">Неизвестно</span>
+                                </span>
+                            </td>
+                            <td class="px-3 py-2 text-end">
+                                <form th:if="${rental.status != 'CANCELLED'}" th:action="@{/admin/rentals/delete/{id}(id=${rental.id})}" method="post" style="display:inline;">
+                                    <button type="submit" class="btn btn-sm btn-udmurt-outline" style="padding: 4px 8px; font-size: 0.8rem;">
+                                        Отменить
+                                    </button>
+                                </form>
+                            </td>
+                        </tr>
+                        <tr th:if="${#lists.isEmpty(rentals)}">
+                            <td colspan="8" class="text-center py-5">
+                                <div style="color: #6c757d;">
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" fill="currentColor" viewBox="0 0 16 16" style="opacity: 0.3;">
+                                        <path d="M8 15A7 7 0 1 1 8 1a7 7 0 0 1 0 14zm0 1A8 8 0 1 0 8 0a8 8 0 0 0 0 16z"/>
+                                        <path d="M8 4a.5.5 0 0 1 .5.5v3h3a.5.5 0 0 1 0 1h-3v3a.5.5 0 0 1-1 0v-3h-3a.5.5 0 0 1 0-1h3v-3A.5.5 0 0 1 8 4z"/>
+                                    </svg>
+                                    <p class="mt-3 mb-0">Нет аренд для отображения</p>
+                                    <p class="small">Попробуйте изменить параметры фильтрации</p>
+                                </div>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+<script>
+    // Автоматическая фильтрация при изменении статуса
+    document.getElementById('statusFilter').addEventListener('change', function() {
+        document.getElementById('filterForm').submit();
+    });
+
+    // Фильтрация с задержкой для поиска по гос. номеру
+    let plateTimeout;
+    document.getElementById('plateInput').addEventListener('input', function() {
+        clearTimeout(plateTimeout);
+        plateTimeout = setTimeout(function() {
+            document.getElementById('filterForm').submit();
+        }, 500); // Задержка 500мс после последнего нажатия
+    });
+
+    // Фильтрация с задержкой для поиска по email
+    let emailTimeout;
+    document.getElementById('emailInput').addEventListener('input', function() {
+        clearTimeout(emailTimeout);
+        emailTimeout = setTimeout(function() {
+            document.getElementById('filterForm').submit();
+        }, 500); // Задержка 500мс после последнего нажатия
+    });
+</script>
+</body>
+</html>

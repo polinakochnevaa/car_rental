@@ -1,0 +1,519 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="ru">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Автомобили — ИжДрайв</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet" />
+    <link rel="stylesheet" th:href="@{/css/styles.css}" />
+    <style>
+        /* Удмуртская цветовая палитра */
+        :root {
+            --udmurt-red: #DC143C;
+            --udmurt-red-dark: #B01030;
+            --udmurt-black: #1a1a1a;
+            --udmurt-white: #ffffff;
+            --udmurt-gray: #f5f5f5;
+        }
+
+        /* Header Navigation */
+        .landing-navbar {
+            background-color: white;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            padding: 1rem 0;
+            border-bottom: 3px solid var(--udmurt-red);
+        }
+
+        .landing-navbar .navbar-brand {
+            font-size: 1.75rem;
+            font-weight: 700;
+            color: var(--udmurt-black);
+        }
+
+        .landing-navbar .brand-accent {
+            color: var(--udmurt-red);
+        }
+
+        .landing-navbar .nav-link {
+            color: var(--udmurt-black);
+            font-weight: 500;
+            padding: 0.5rem 1rem;
+            transition: color 0.3s ease;
+        }
+
+        .landing-navbar .nav-link:hover {
+            color: var(--udmurt-red);
+        }
+
+        .landing-navbar .nav-link.active {
+            color: var(--udmurt-red);
+        }
+
+        .btn-udmurt-primary {
+            background-color: var(--udmurt-red);
+            color: white;
+            border: none;
+            padding: 0.625rem 1.5rem;
+            border-radius: 6px;
+            font-weight: 500;
+            transition: all 0.3s ease;
+        }
+
+        .btn-udmurt-primary:hover {
+            background-color: var(--udmurt-red-dark);
+            color: white;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(220, 20, 60, 0.3);
+        }
+
+        .btn-udmurt-outline {
+            background-color: transparent;
+            color: var(--udmurt-black);
+            border: 2px solid var(--udmurt-black);
+            padding: 0.625rem 1.5rem;
+            border-radius: 6px;
+            font-weight: 500;
+            transition: all 0.3s ease;
+        }
+
+        .btn-udmurt-outline:hover {
+            background-color: var(--udmurt-black);
+            color: white;
+        }
+
+        /* Cars Section */
+        .cars-section {
+            padding: 40px 0;
+            background-color: var(--udmurt-gray);
+            min-height: calc(100vh - 200px);
+        }
+
+        .page-header {
+            background: white;
+            padding: 1.25rem 1.5rem;
+            border-radius: 10px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+            margin-bottom: 1.5rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .page-header h1 {
+            font-size: 1.75rem;
+            margin: 0;
+            color: var(--udmurt-black);
+        }
+
+        .cars-counter {
+            background: linear-gradient(135deg, var(--udmurt-red), var(--udmurt-red-dark));
+            color: white;
+            padding: 0.5rem 1.25rem;
+            border-radius: 8px;
+            font-weight: 600;
+            font-size: 1rem;
+            box-shadow: 0 2px 8px rgba(220, 20, 60, 0.25);
+        }
+
+        .cars-counter .count {
+            font-size: 1.5rem;
+            font-weight: 700;
+            margin-left: 0.5rem;
+        }
+
+        .filters-card {
+            background: white;
+            padding: 1.25rem;
+            border-radius: 10px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+            margin-bottom: 1.5rem;
+        }
+
+        .filters-card .form-label {
+            font-size: 0.875rem;
+            font-weight: 600;
+            color: var(--udmurt-red);
+            margin-bottom: 0.375rem;
+        }
+
+        .filters-card .form-select,
+        .filters-card .form-control {
+            font-size: 0.9rem;
+            padding: 0.5rem 0.75rem;
+            border: 1px solid #dee2e6;
+            border-radius: 6px;
+        }
+
+        .filters-card .form-select:focus,
+        .filters-card .form-control:focus {
+            border-color: var(--udmurt-red);
+            box-shadow: 0 0 0 0.2rem rgba(220, 20, 60, 0.15);
+        }
+
+        .car-card {
+            background: white;
+            border-radius: 10px;
+            box-shadow: 0 2px 6px rgba(0, 0, 0, 0.08);
+            transition: all 0.3s ease;
+            height: 100%;
+            overflow: hidden;
+        }
+
+        .car-card:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 6px 16px rgba(220, 20, 60, 0.15);
+        }
+
+        .car-card-body {
+            padding: 1.25rem;
+        }
+
+        .car-title {
+            font-size: 1.15rem;
+            font-weight: 600;
+            color: var(--udmurt-black);
+            margin-bottom: 0.75rem;
+        }
+
+        .car-details {
+            font-size: 0.875rem;
+            color: #666;
+            margin-bottom: 0.4rem;
+            display: flex;
+            justify-content: space-between;
+        }
+
+        .car-details strong {
+            color: #333;
+        }
+
+        .car-price {
+            font-size: 1.35rem;
+            font-weight: 700;
+            color: var(--udmurt-red);
+            margin: 0.75rem 0;
+        }
+
+        .status-badge {
+            display: inline-block;
+            padding: 0.3rem 0.65rem;
+            border-radius: 5px;
+            font-size: 0.8rem;
+            font-weight: 600;
+            margin-bottom: 0.75rem;
+        }
+
+        .status-available {
+            background-color: #28a745;
+            color: white;
+        }
+
+        .status-rented {
+            background-color: #dc3545;
+            color: white;
+        }
+
+        .status-reserved {
+            background-color: #ffc107;
+            color: #1a1a1a;
+        }
+
+        .status-maintenance {
+            background-color: #000000;
+            color: white;
+        }
+
+        /* Footer */
+        .footer {
+            background-color: var(--udmurt-black);
+            color: white;
+            padding: 40px 0 20px;
+            margin-top: auto;
+        }
+
+        .footer h5 {
+            color: white;
+            font-size: 1.125rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .footer p, .footer a {
+            color: rgba(255, 255, 255, 0.8);
+            text-decoration: none;
+            margin-bottom: 0.5rem;
+        }
+
+        .footer a:hover {
+            color: var(--udmurt-red);
+        }
+
+        .footer-bottom {
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+            margin-top: 2rem;
+            padding-top: 1.5rem;
+            text-align: center;
+            color: rgba(255, 255, 255, 0.6);
+        }
+    </style>
+</head>
+<body>
+
+<!-- Header Navigation -->
+<nav class="landing-navbar">
+    <div class="container">
+        <div class="d-flex justify-content-between align-items-center">
+            <a class="navbar-brand d-flex align-items-center" th:href="@{/user}">
+                <img th:src="@{/images/logos/Logo_red.svg}" alt="ИжДрайв" style="height: 40px; margin-right: 10px;" />
+                <span><span class="brand-accent">Иж</span>Драйв</span>
+            </a>
+            <div class="d-flex align-items-center">
+                <a class="nav-link" th:href="@{/user}">Главная</a>
+                <a class="nav-link active" th:href="@{/user/cars}">Автомобили</a>
+                <a class="nav-link" th:href="@{/user/rentals/my}">Мои аренды</a>
+                <a class="nav-link" th:href="@{/user/profile/my}">Профиль</a>
+                <a th:href="@{/logout}" class="btn btn-udmurt-outline ms-3">Выход</a>
+            </div>
+        </div>
+    </div>
+</nav>
+
+<!-- Cars Section -->
+<section class="cars-section">
+    <div class="container">
+        <!-- Header -->
+        <div class="page-header">
+            <h1>Доступные автомобили</h1>
+            <div class="cars-counter">
+                Найдено:<span class="count" th:text="${#lists.size(cars)}">0</span>
+            </div>
+        </div>
+
+        <!-- Фильтры -->
+        <div class="filters-card">
+            <form id="filterForm" method="get" th:action="@{/user/cars}">
+                <div class="row g-2 align-items-end">
+                    <div class="col-lg-2 col-md-4 col-sm-6">
+                        <label class="form-label">Марка</label>
+                        <select id="brandFilter" name="brandId" class="form-select">
+                            <option th:value="0" th:selected="${selectedBrand == null or selectedBrand == 0}">Все</option>
+                            <option th:each="brand : ${brands}" th:value="${brand.id}" th:text="${brand.name}" th:selected="${brand.id == selectedBrand}"></option>
+                        </select>
+                    </div>
+                    <div class="col-lg-2 col-md-4 col-sm-6">
+                        <label class="form-label">Год</label>
+                        <select id="yearFilter" name="year" class="form-select">
+                            <option th:value="0" th:selected="${selectedYear == null or selectedYear == 0}">Все</option>
+                            <option th:each="yr : ${years}" th:value="${yr}" th:text="${yr}" th:selected="${yr == selectedYear}"></option>
+                        </select>
+                    </div>
+                    <div class="col-lg-2 col-md-4 col-sm-6">
+                        <label class="form-label">Цвет</label>
+                        <select id="colorFilter" name="color" class="form-select">
+                            <option value="" th:selected="${selectedColor == null or selectedColor == ''}">Все</option>
+                            <option th:each="col : ${colors}" th:value="${col}" th:text="${col}" th:selected="${col == selectedColor}"></option>
+                        </select>
+                    </div>
+                    <div class="col-lg-2 col-md-4 col-sm-6">
+                        <label class="form-label">Город</label>
+                        <select id="cityFilter" name="city" class="form-select">
+                            <option value="" th:selected="${selectedCity == null or selectedCity == ''}">Все</option>
+                            <option th:each="cty : ${cities}" th:value="${cty}" th:text="${cty}" th:selected="${cty == selectedCity}"></option>
+                        </select>
+                    </div>
+                    <div class="col-lg-2 col-md-4 col-sm-6">
+                        <label class="form-label">Цена от</label>
+                        <input type="number" id="minPriceFilter" name="minPrice" class="form-control" th:placeholder="${minPriceAvailable}" th:value="${selectedMinPrice}" min="0" step="100" />
+                    </div>
+                    <div class="col-lg-2 col-md-4 col-sm-6">
+                        <label class="form-label">Цена до</label>
+                        <input type="number" id="maxPriceFilter" name="maxPrice" class="form-control" th:placeholder="${maxPriceAvailable}" th:value="${selectedMaxPrice}" min="0" step="100" />
+                    </div>
+                </div>
+                <div class="row g-2 align-items-end mt-2">
+                    <div class="col-lg-10 col-md-8">
+                        <label class="form-label">Сортировка</label>
+                        <select id="sortFilter" name="sortOrder" class="form-select">
+                            <option th:value="default" th:selected="${sortOrder == 'default'}">По умолчанию</option>
+                            <option th:value="priceAsc" th:selected="${sortOrder == 'priceAsc'}">Цена: по возрастанию</option>
+                            <option th:value="priceDesc" th:selected="${sortOrder == 'priceDesc'}">Цена: по убыванию</option>
+                        </select>
+                    </div>
+                    <div class="col-lg-2 col-md-4">
+                        <a th:href="@{/user/cars}" class="btn btn-udmurt-primary w-100" style="padding: 0.5rem 0.75rem;">Сбросить</a>
+                    </div>
+                </div>
+            </form>
+        </div>
+
+        <!-- Список автомобилей -->
+        <div class="row row-cols-1 row-cols-md-2 row-cols-lg-3 g-3">
+            <div class="col" th:each="car : ${cars}">
+                <div class="car-card">
+                    <div class="car-card-body">
+                        <!-- Статус и название -->
+                        <div class="d-flex justify-content-between align-items-start mb-2">
+                            <h5 class="car-title mb-0" th:text="${car.brand.name + ' ' + car.model.name}">Марка и модель</h5>
+                            <span th:switch="${car.status}">
+                                <span th:case="'AVAILABLE'" class="status-badge status-available">Свободен</span>
+                                <span th:case="'RENTED'" class="status-badge status-rented">Занят</span>
+                                <span th:case="'RESERVED'" class="status-badge status-reserved">Зарезервирован</span>
+                                <span th:case="'MAINTENANCE'" class="status-badge status-maintenance">Обслуживание</span>
+                            </span>
+                        </div>
+
+                        <!-- Детали -->
+                        <div class="mt-3">
+                            <div class="car-details">
+                                <span><strong>Год:</strong></span>
+                                <span th:text="${car.yearOfManufacture}">2020</span>
+                            </div>
+                            <div class="car-details">
+                                <span><strong>Цвет:</strong></span>
+                                <span th:text="${car.color}">Черный</span>
+                            </div>
+                            <div class="car-details">
+                                <span><strong>Гос. номер:</strong></span>
+                                <span th:text="${car.licensePlate}">А123АА18</span>
+                            </div>
+                            <div class="car-details">
+                                <span><strong>Город:</strong></span>
+                                <span th:text="${car.city}">Ижевск</span>
+                            </div>
+                        </div>
+
+                        <!-- Цена -->
+                        <div class="car-price" th:text="${#numbers.formatDecimal(car.pricePerDay / 100.0, 1, 2) + ' ₽/день'}">1500 ₽/день</div>
+
+                        <!-- Кнопка -->
+                        <div class="d-grid">
+                            <a th:if="${car.status == 'AVAILABLE'}"
+                               th:href="@{/user/rentals/add(carId=${car.id})}"
+                               class="btn btn-udmurt-primary"
+                               style="padding: 0.5rem;">
+                                Взять в аренду
+                            </a>
+                            <button th:if="${car.status != 'AVAILABLE'}"
+                                    class="btn btn-udmurt-outline"
+                                    style="padding: 0.5rem;"
+                                    disabled>
+                                Недоступно
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Сообщение если нет автомобилей -->
+        <div th:if="${#lists.isEmpty(cars)}" class="text-center py-5">
+            <div style="color: #6c757d;">
+                <svg xmlns="http://www.w3.org/2000/svg" width="64" height="64" fill="currentColor" viewBox="0 0 16 16" style="opacity: 0.3;">
+                    <path d="M8 15A7 7 0 1 1 8 1a7 7 0 0 1 0 14zm0 1A8 8 0 1 0 8 0a8 8 0 0 0 0 16z"/>
+                    <path d="M8 4a.5.5 0 0 1 .5.5v3h3a.5.5 0 0 1 0 1h-3v3a.5.5 0 0 1-1 0v-3h-3a.5.5 0 0 1 0-1h3v-3A.5.5 0 0 1 8 4z"/>
+                </svg>
+                <p class="mt-3 mb-0 h5">Автомобилей не найдено</p>
+                <p class="small">Попробуйте изменить параметры фильтрации</p>
+                <a th:href="@{/user/cars}" class="btn btn-udmurt-primary mt-3">Сбросить фильтры</a>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Footer -->
+<footer class="footer">
+    <div class="container">
+        <div class="row">
+            <div class="col-md-4 mb-4">
+                <div class="d-flex align-items-center mb-3">
+                    <img th:src="@{/images/logos/Logo_white.svg}" alt="ИжДрайв" style="height: 35px; margin-right: 12px;" />
+                    <h5 class="mb-0">ИжДрайв</h5>
+                </div>
+                <p style="line-height: 1.6;">Современный сервис аренды автомобилей по всей Удмуртской Республике.</p>
+                <div class="mt-3">
+                    <div class="d-flex align-items-start mb-2">
+                        <img th:src="@{/images/Gerb_Flag_Udmurtii/Flag_Udmurtii.svg}" alt="Флаг Удмуртии" style="height: 24px; width: 36px; margin-right: 12px; margin-top: 2px;" />
+                        <div>
+                            <div><strong>Регион:</strong> Удмуртская Республика</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-md-4 mb-4">
+                <h5 class="mb-3">Контакты</h5>
+                <div class="footer-contacts">
+                    <p class="mb-2"><strong>Email:</strong> info@izhdrive.ru</p>
+                    <p class="mb-2"><strong>Телефон:</strong> +7 (912) 181-18-18</p>
+                    <p class="mb-2"><strong>Адрес:</strong> г. Ижевск, ул. Пушкинская, д. 268</p>
+                </div>
+            </div>
+
+            <div class="col-md-4 mb-4">
+                <h5 class="mb-3">Города обслуживания</h5>
+                <div class="footer-cities">
+                    <div class="d-flex align-items-center mb-2">
+                        <img th:src="@{/images/cities_gerbs/Gerb_Izhevsk.svg}" alt="" style="height: 18px; width: 18px; margin-right: 10px; object-fit: contain;" />
+                        <span>Ижевск (главный офис)</span>
+                    </div>
+                    <div class="d-flex align-items-center mb-2">
+                        <img th:src="@{/images/cities_gerbs/Gerb_Votkins.png}" alt="" style="height: 18px; width: 18px; margin-right: 10px; object-fit: contain;" />
+                        <span>Воткинск</span>
+                    </div>
+                    <div class="d-flex align-items-center mb-2">
+                        <img th:src="@{/images/cities_gerbs/Gerb_Sarapul.png}" alt="" style="height: 18px; width: 18px; margin-right: 10px; object-fit: contain;" />
+                        <span>Сарапул</span>
+                    </div>
+                    <div class="d-flex align-items-center mb-2">
+                        <img th:src="@{/images/cities_gerbs/Gerb_Glazov.png}" alt="" style="height: 18px; width: 18px; margin-right: 10px; object-fit: contain;" />
+                        <span>Глазов</span>
+                    </div>
+                    <div class="d-flex align-items-center mb-2">
+                        <img th:src="@{/images/cities_gerbs/Gerb_Mozhga.png}" alt="" style="height: 18px; width: 18px; margin-right: 10px; object-fit: contain;" />
+                        <span>Можга</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="footer-bottom">
+            <p class="mb-0">&copy; 2025 ИжДрайв. Все права защищены. Удмуртская Республика.</p>
+        </div>
+    </div>
+</footer>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+<script>
+    // Автоматическая фильтрация при изменении фильтров
+    document.getElementById('brandFilter').addEventListener('change', function() {
+        document.getElementById('filterForm').submit();
+    });
+    document.getElementById('yearFilter').addEventListener('change', function() {
+        document.getElementById('filterForm').submit();
+    });
+    document.getElementById('colorFilter').addEventListener('change', function() {
+        document.getElementById('filterForm').submit();
+    });
+    document.getElementById('cityFilter').addEventListener('change', function() {
+        document.getElementById('filterForm').submit();
+    });
+    document.getElementById('sortFilter').addEventListener('change', function() {
+        document.getElementById('filterForm').submit();
+    });
+
+    // Автоматическая фильтрация при изменении цены (с небольшой задержкой)
+    let priceTimeout;
+    document.getElementById('minPriceFilter').addEventListener('input', function() {
+        clearTimeout(priceTimeout);
+        priceTimeout = setTimeout(function() {
+            document.getElementById('filterForm').submit();
+        }, 800);
+    });
+    document.getElementById('maxPriceFilter').addEventListener('input', function() {
+        clearTimeout(priceTimeout);
+        priceTimeout = setTimeout(function() {
+            document.getElementById('filterForm').submit();
+        }, 800);
+    });
+</script>
+</body>
+</html>

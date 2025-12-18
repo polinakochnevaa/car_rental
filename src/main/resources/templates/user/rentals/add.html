@@ -1,0 +1,408 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="ru">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Взять в аренду — ИжДрайв</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet" />
+    <link rel="stylesheet" th:href="@{/css/styles.css}" />
+    <style>
+        /* Удмуртская цветовая палитра */
+        :root {
+            --udmurt-red: #DC143C;
+            --udmurt-red-dark: #B01030;
+            --udmurt-black: #1a1a1a;
+            --udmurt-white: #ffffff;
+            --udmurt-gray: #f5f5f5;
+        }
+
+        /* Header Navigation */
+        .landing-navbar {
+            background-color: white;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            padding: 1rem 0;
+            border-bottom: 3px solid var(--udmurt-red);
+        }
+
+        .landing-navbar .navbar-brand {
+            font-size: 1.75rem;
+            font-weight: 700;
+            color: var(--udmurt-black);
+        }
+
+        .landing-navbar .brand-accent {
+            color: var(--udmurt-red);
+        }
+
+        .landing-navbar .nav-link {
+            color: var(--udmurt-black);
+            font-weight: 500;
+            padding: 0.5rem 1rem;
+            transition: color 0.3s ease;
+        }
+
+        .landing-navbar .nav-link:hover {
+            color: var(--udmurt-red);
+        }
+
+        .landing-navbar .nav-link.active {
+            color: var(--udmurt-red);
+        }
+
+        .btn-udmurt-primary {
+            background-color: var(--udmurt-red);
+            color: white;
+            border: none;
+            padding: 0.625rem 1.5rem;
+            border-radius: 6px;
+            font-weight: 500;
+            transition: all 0.3s ease;
+        }
+
+        .btn-udmurt-primary:hover {
+            background-color: var(--udmurt-red-dark);
+            color: white;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(220, 20, 60, 0.3);
+        }
+
+        .btn-udmurt-outline {
+            background-color: transparent;
+            color: var(--udmurt-black);
+            border: 2px solid var(--udmurt-black);
+            padding: 0.625rem 1.5rem;
+            border-radius: 6px;
+            font-weight: 500;
+            transition: all 0.3s ease;
+        }
+
+        .btn-udmurt-outline:hover {
+            background-color: var(--udmurt-black);
+            color: white;
+        }
+
+        /* Content Section */
+        .content-section {
+            padding: 40px 0;
+            background-color: var(--udmurt-gray);
+            min-height: calc(100vh - 200px);
+        }
+
+        .page-header {
+            background: white;
+            padding: 1.25rem 1.5rem;
+            border-radius: 10px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+            margin-bottom: 1.5rem;
+        }
+
+        .page-header h1 {
+            font-size: 1.75rem;
+            margin: 0;
+            color: var(--udmurt-black);
+        }
+
+        .content-card {
+            background: white;
+            padding: 1.5rem;
+            border-radius: 10px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+            margin-bottom: 1.5rem;
+        }
+
+        .car-info {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .car-info-item {
+            padding: 0.75rem;
+            background-color: var(--udmurt-gray);
+            border-radius: 6px;
+        }
+
+        .car-info-item strong {
+            display: block;
+            color: var(--udmurt-red);
+            font-size: 0.85rem;
+            margin-bottom: 0.25rem;
+        }
+
+        .car-info-item span {
+            font-size: 1rem;
+            color: var(--udmurt-black);
+        }
+
+        .price-display {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--udmurt-red);
+        }
+
+        .form-label {
+            font-weight: 600;
+            color: var(--udmurt-black);
+            margin-bottom: 0.5rem;
+        }
+
+        .form-control:focus {
+            border-color: var(--udmurt-red);
+            box-shadow: 0 0 0 0.2rem rgba(220, 20, 60, 0.25);
+        }
+
+        .alert-info {
+            background-color: rgba(220, 20, 60, 0.1);
+            border-color: var(--udmurt-red);
+            color: var(--udmurt-black);
+        }
+
+        /* Footer */
+        .footer {
+            background-color: var(--udmurt-black);
+            color: white;
+            padding: 40px 0 20px;
+            margin-top: auto;
+        }
+
+        .footer h5 {
+            color: white;
+            font-size: 1.125rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .footer p, .footer a {
+            color: rgba(255, 255, 255, 0.8);
+            text-decoration: none;
+            margin-bottom: 0.5rem;
+        }
+
+        .footer a:hover {
+            color: var(--udmurt-red);
+        }
+
+        .footer-bottom {
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+            margin-top: 2rem;
+            padding-top: 1.5rem;
+            text-align: center;
+            color: rgba(255, 255, 255, 0.6);
+        }
+    </style>
+</head>
+<body>
+
+<!-- Header Navigation -->
+<nav class="landing-navbar">
+    <div class="container">
+        <div class="d-flex justify-content-between align-items-center">
+            <a class="navbar-brand d-flex align-items-center" th:href="@{/user}">
+                <img th:src="@{/images/logos/Logo_red.svg}" alt="ИжДрайв" style="height: 40px; margin-right: 10px;" />
+                <span><span class="brand-accent">Иж</span>Драйв</span>
+            </a>
+            <div class="d-flex align-items-center">
+                <a class="nav-link" th:href="@{/user}">Главная</a>
+                <a class="nav-link" th:href="@{/user/cars}">Автомобили</a>
+                <a class="nav-link active" th:href="@{/user/rentals/my}">Мои аренды</a>
+                <a class="nav-link" th:href="@{/user/profile/my}">Профиль</a>
+                <a th:href="@{/logout}" class="btn btn-udmurt-outline ms-3">Выход</a>
+            </div>
+        </div>
+    </div>
+</nav>
+
+<!-- Content Section -->
+<section class="content-section">
+    <div class="container">
+        <!-- Header -->
+        <div class="page-header">
+            <h1>Оформление аренды</h1>
+        </div>
+
+        <!-- Car Info -->
+        <div class="content-card">
+            <h4 style="color: var(--udmurt-red); margin-bottom: 1rem;">Информация об автомобиле</h4>
+            <div class="car-info">
+                <div class="car-info-item">
+                    <strong>Марка и модель</strong>
+                    <span th:text="${car.brand.name + ' ' + car.model.name}">Автомобиль</span>
+                </div>
+                <div class="car-info-item">
+                    <strong>Год выпуска</strong>
+                    <span th:text="${car.yearOfManufacture}">2020</span>
+                </div>
+                <div class="car-info-item">
+                    <strong>Цвет</strong>
+                    <span th:text="${car.color}">Черный</span>
+                </div>
+                <div class="car-info-item">
+                    <strong>Гос. номер</strong>
+                    <span th:text="${car.licensePlate}">А123АА18</span>
+                </div>
+                <div class="car-info-item">
+                    <strong>Город</strong>
+                    <span th:text="${car.city}">Ижевск</span>
+                </div>
+                <div class="car-info-item">
+                    <strong>Цена за день</strong>
+                    <span class="price-display" th:text="${#numbers.formatDecimal(car.pricePerDay / 100.0, 1, 2) + ' ₽'}">1500 ₽</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- Rental Form -->
+        <div class="content-card">
+            <h4 style="color: var(--udmurt-red); margin-bottom: 1rem;">Период аренды</h4>
+            <form th:action="@{/user/rentals/add}" method="post" id="rentalForm">
+                <input type="hidden" name="car.id" th:value="${car.id}" />
+
+                <div class="row mb-3">
+                    <div class="col-md-6 mb-3">
+                        <label for="startDate" class="form-label">Дата начала аренды</label>
+                        <input type="date" id="startDate" name="startDate" class="form-control" required />
+                        <small class="text-muted">Аренда возможна только с завтрашнего дня</small>
+                    </div>
+                    <div class="col-md-6 mb-3">
+                        <label for="endDate" class="form-label">Дата окончания аренды</label>
+                        <input type="date" id="endDate" name="endDate" class="form-control" required />
+                        <small class="text-muted">Выберите любую дату после начала аренды</small>
+                    </div>
+                </div>
+
+                <div class="d-flex gap-2">
+                    <button type="submit" class="btn btn-udmurt-primary btn-lg">Перейти к оплате</button>
+                    <a th:href="@{/user/cars}" class="btn btn-udmurt-outline btn-lg">Отмена</a>
+                </div>
+            </form>
+        </div>
+    </div>
+</section>
+
+<!-- Footer -->
+<footer class="footer">
+    <div class="container">
+        <div class="row">
+            <div class="col-md-4 mb-4">
+                <div class="d-flex align-items-center mb-3">
+                    <img th:src="@{/images/logos/Logo_white.svg}" alt="ИжДрайв" style="height: 35px; margin-right: 12px;" />
+                    <h5 class="mb-0">ИжДрайв</h5>
+                </div>
+                <p style="line-height: 1.6;">Современный сервис аренды автомобилей по всей Удмуртской Республике.</p>
+                <div class="mt-3">
+                    <div class="d-flex align-items-start mb-2">
+                        <img th:src="@{/images/Gerb_Flag_Udmurtii/Flag_Udmurtii.svg}" alt="Флаг Удмуртии" style="height: 24px; width: 36px; margin-right: 12px; margin-top: 2px;" />
+                        <div>
+                            <div><strong>Регион:</strong> Удмуртская Республика</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-md-4 mb-4">
+                <h5 class="mb-3">Контакты</h5>
+                <div class="footer-contacts">
+                    <p class="mb-2"><strong>Email:</strong> info@izhdrive.ru</p>
+                    <p class="mb-2"><strong>Телефон:</strong> +7 (912) 181-18-18</p>
+                    <p class="mb-2"><strong>Адрес:</strong> г. Ижевск, ул. Пушкинская, д. 268</p>
+                </div>
+            </div>
+
+            <div class="col-md-4 mb-4">
+                <h5 class="mb-3">Города обслуживания</h5>
+                <div class="footer-cities">
+                    <div class="d-flex align-items-center mb-2">
+                        <img th:src="@{/images/cities_gerbs/Gerb_Izhevsk.svg}" alt="" style="height: 18px; width: 18px; margin-right: 10px; object-fit: contain;" />
+                        <span>Ижевск (главный офис)</span>
+                    </div>
+                    <div class="d-flex align-items-center mb-2">
+                        <img th:src="@{/images/cities_gerbs/Gerb_Votkins.png}" alt="" style="height: 18px; width: 18px; margin-right: 10px; object-fit: contain;" />
+                        <span>Воткинск</span>
+                    </div>
+                    <div class="d-flex align-items-center mb-2">
+                        <img th:src="@{/images/cities_gerbs/Gerb_Sarapul.png}" alt="" style="height: 18px; width: 18px; margin-right: 10px; object-fit: contain;" />
+                        <span>Сарапул</span>
+                    </div>
+                    <div class="d-flex align-items-center mb-2">
+                        <img th:src="@{/images/cities_gerbs/Gerb_Glazov.png}" alt="" style="height: 18px; width: 18px; margin-right: 10px; object-fit: contain;" />
+                        <span>Глазов</span>
+                    </div>
+                    <div class="d-flex align-items-center mb-2">
+                        <img th:src="@{/images/cities_gerbs/Gerb_Mozhga.png}" alt="" style="height: 18px; width: 18px; margin-right: 10px; object-fit: contain;" />
+                        <span>Можга</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="footer-bottom">
+            <p class="mb-0">&copy; 2025 ИжДрайв. Все права защищены. Удмуртская Республика.</p>
+        </div>
+    </div>
+</footer>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        const startDateInput = document.getElementById('startDate');
+        const endDateInput = document.getElementById('endDate');
+
+        // Получаем завтрашнюю дату
+        const today = new Date();
+        const tomorrow = new Date(today);
+        tomorrow.setDate(tomorrow.getDate() + 1);
+
+        // Форматируем даты в YYYY-MM-DD
+        const formatDate = (date) => {
+            const year = date.getFullYear();
+            const month = String(date.getMonth() + 1).padStart(2, '0');
+            const day = String(date.getDate()).padStart(2, '0');
+            return `${year}-${month}-${day}`;
+        };
+
+        const tomorrowStr = formatDate(tomorrow);
+
+        // Устанавливаем ограничения для даты начала (только завтра)
+        startDateInput.setAttribute('min', tomorrowStr);
+        startDateInput.setAttribute('max', tomorrowStr);
+        startDateInput.value = tomorrowStr; // По умолчанию завтра
+
+        // Устанавливаем минимальную дату окончания = дата начала + 1 день
+        function updateEndDateMin() {
+            const startDate = new Date(startDateInput.value);
+            const minEndDate = new Date(startDate);
+            minEndDate.setDate(minEndDate.getDate() + 1);
+            endDateInput.setAttribute('min', formatDate(minEndDate));
+
+            // Если дата окончания уже выбрана и она меньше новой минимальной, сбрасываем
+            if (endDateInput.value && endDateInput.value < formatDate(minEndDate)) {
+                endDateInput.value = formatDate(minEndDate);
+            }
+        }
+
+        startDateInput.addEventListener('change', updateEndDateMin);
+        updateEndDateMin(); // Инициализация при загрузке
+
+        // Валидация формы
+        document.getElementById('rentalForm').addEventListener('submit', function(e) {
+            const startDate = new Date(startDateInput.value);
+            const endDate = new Date(endDateInput.value);
+
+            // Проверяем что дата начала - завтра
+            if (startDate.toDateString() !== tomorrow.toDateString()) {
+                e.preventDefault();
+                alert('Аренда возможна только с завтрашнего дня!');
+                return false;
+            }
+
+            // Проверяем что дата окончания после даты начала
+            if (endDate <= startDate) {
+                e.preventDefault();
+                alert('Дата окончания должна быть позже даты начала!');
+                return false;
+            }
+        });
+    });
+</script>
+</body>
+</html>

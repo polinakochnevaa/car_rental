@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="ru">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Редактировать автомобиль — Администрирование</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet" />
+    <link rel="stylesheet" th:href="@{/css/styles.css}" />
+</head>
+<body>
+<nav class="navbar navbar-expand-lg">
+    <div class="container">
+        <a class="navbar-brand d-flex align-items-center" th:href="@{/}">
+            <img th:src="@{/images/logos/Logo_red.svg}" alt="ИжДрайв" style="height: 40px; margin-right: 12px;" />
+            <span style="color: var(--primary); font-weight: 600; font-size: 1.25rem;">ИжДрайв</span>
+        </a>
+        <div class="navbar-nav">
+            <a class="nav-link" th:href="@{/}">Главная</a>
+            <a class="nav-link" th:href="@{/admin/brands}">Марки</a>
+            <a class="nav-link" th:href="@{/admin/models}">Модели</a>
+            <a class="nav-link active" th:href="@{/admin/cars}">Автомобили</a>
+            <a class="nav-link" th:href="@{/admin/rentals}">Аренды</a>
+            <a class="nav-link" th:href="@{/admin/users}">Пользователи</a>
+            <a class="nav-link" th:href="@{/logout}">Выход</a>
+        </div>
+    </div>
+</nav>
+
+<div class="container">
+    <div class="card">
+        <div class="card-header">
+            <h2>Редактировать автомобиль</h2>
+        </div>
+        <div class="card-body">
+            <form th:action="@{/admin/cars/edit}" method="post" th:object="${car}">
+                <input type="hidden" th:field="*{id}" />
+
+                <div class="row">
+                    <div class="col-md-6 mb-3">
+                        <label for="brand" class="form-label">Марка</label>
+                        <select id="brand" class="form-select" th:field="*{brand.id}" required>
+                            <option th:each="brand : ${brands}" th:value="${brand.id}" th:text="${brand.name}" th:selected="${brand.id == car.brand.id}"></option>
+                        </select>
+                    </div>
+                    <div class="col-md-6 mb-3">
+                        <label for="model" class="form-label">Модель</label>
+                        <select id="model" class="form-select" th:field="*{model.id}" required>
+                            <option th:each="model : ${models}" th:value="${model.id}" th:text="${model.name}" th:selected="${model.id == car.model.id}"></option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="row">
+                    <div class="col-md-6 mb-3">
+                        <label for="yearOfManufacture" class="form-label">Год выпуска</label>
+                        <input type="number" id="yearOfManufacture" class="form-control" th:field="*{yearOfManufacture}" min="1900" max="2100" required />
+                    </div>
+                    <div class="col-md-6 mb-3">
+                        <label for="color" class="form-label">Цвет</label>
+                        <input type="text" id="color" class="form-control" th:field="*{color}" required />
+                    </div>
+                </div>
+
+                <div class="mb-3">
+                    <label for="licensePlate" class="form-label">Номерной знак</label>
+                    <input type="text" id="licensePlate" class="form-control" th:field="*{licensePlate}"
+                           placeholder="А123АА18"
+                           required />
+                </div>
+
+                <div class="mb-3">
+                    <label for="pricePerDay" class="form-label">Цена за день (в копейках)</label>
+                    <div class="input-group">
+                        <input type="number" id="pricePerDay" class="form-control" th:field="*{pricePerDay}" min="0" required />
+                        <span class="input-group-text">копеек</span>
+                    </div>
+                    <div class="form-text">Например: 300000 копеек = 3000 рублей</div>
+                </div>
+
+                <div class="row">
+                    <div class="col-md-6 mb-3">
+                        <label for="status" class="form-label">Статус</label>
+                        <div th:if="${car.status == 'RENTED' || car.status == 'RESERVED'}">
+                            <input type="text" class="form-control"
+                                   th:value="${car.status == 'RENTED' ? 'Занят' : 'Зарезервирован'}"
+                                   disabled />
+                            <input type="hidden" th:name="status" th:value="${car.status}" />
+                        </div>
+                        <select th:if="${car.status != 'RENTED' && car.status != 'RESERVED'}"
+                                id="status" class="form-select" th:field="*{status}" required>
+                            <option value="AVAILABLE">Свободен</option>
+                            <option value="MAINTENANCE">Обслуживание</option>
+                        </select>
+                    </div>
+
+                    <div class="col-md-6 mb-3">
+                        <label for="city" class="form-label">Город</label>
+                        <select id="city" class="form-select" th:field="*{city}" required>
+                            <option value="">Выберите город</option>
+                            <option value="Ижевск">Ижевск</option>
+                            <option value="Воткинск">Воткинск</option>
+                            <option value="Сарапул">Сарапул</option>
+                            <option value="Глазов">Глазов</option>
+                            <option value="Можга">Можга</option>
+                        </select>
+                    </div>
+                </div>
+
+                <button type="submit" class="btn btn-udmurt-primary">Сохранить изменения</button>
+                <a th:href="@{/admin/cars}" class="btn btn-udmurt-outline">Отмена</a>
+            </form>
+        </div>
+    </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

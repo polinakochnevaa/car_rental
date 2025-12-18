@@ -1,0 +1,184 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="ru">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Регистрация — ИжДрайв</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet" />
+  <link rel="stylesheet" th:href="@{/css/styles.css}" />
+</head>
+<body>
+<div class="auth-container">
+  <div class="auth-card card shadow-lg" style="max-width: 600px;">
+    <div class="card-header text-center text-white">
+      <div class="d-flex justify-content-center align-items-center mb-3">
+        <img th:src="@{/images/logos/Logo_white.svg}" alt="ИжДрайв" style="height: 50px; margin-right: 12px;" />
+        <h3 class="mb-0 text-white">Регистрация в ИжДрайв</h3>
+      </div>
+      <p class="mb-0 text-white" style="opacity: 0.9;">Создайте аккаунт для аренды автомобилей</p>
+    </div>
+    <div class="card-body">
+      <form th:action="@{/register}" method="post" th:object="${user}">
+        <div th:if="${error}" class="alert alert-danger" th:text="${error}"></div>
+
+        <div class="mb-3">
+          <label for="email" class="form-label">
+            Email <span style="color: #DC143C;">*</span>
+            <span class="text-muted" style="cursor: help;" data-bs-toggle="tooltip" data-bs-placement="top" title="Введите свой email адрес">ℹ</span>
+          </label>
+          <input type="email" id="email" th:field="*{email}" class="form-control" required placeholder="example@mail.ru" />
+        </div>
+
+        <div class="row">
+          <div class="col-md-6 mb-3">
+            <label for="password" class="form-label">
+              Пароль <span style="color: #DC143C;">*</span>
+              <span class="text-muted" style="cursor: help;" data-bs-toggle="tooltip" data-bs-placement="top" title="Минимум 8 символов, включая цифры и специальные символы">ℹ</span>
+            </label>
+            <input type="password" id="password" th:field="*{password}" class="form-control" required placeholder="Введите пароль" />
+          </div>
+
+          <div class="col-md-6 mb-3">
+            <label for="confirmPassword" class="form-label">
+              Подтвердите пароль <span style="color: #DC143C;">*</span>
+              <span class="text-muted" style="cursor: help;" data-bs-toggle="tooltip" data-bs-placement="top" title="Пароль должен совпадать с введённым выше">ℹ</span>
+            </label>
+            <input type="password" id="confirmPassword" class="form-control" required placeholder="Повторите пароль" />
+          </div>
+        </div>
+
+        <div class="row">
+          <div class="col-md-6 mb-3">
+            <label for="lastName" class="form-label">
+              Фамилия <span style="color: #DC143C;">*</span>
+              <span class="text-muted" style="cursor: help;" data-bs-toggle="tooltip" data-bs-placement="top" title="Только кириллица">ℹ</span>
+            </label>
+            <input type="text" id="lastName" th:field="*{lastName}" class="form-control" required pattern="^[А-ЯЁа-яё\s-]+$" placeholder="Иванов" />
+          </div>
+
+          <div class="col-md-6 mb-3">
+            <label for="firstName" class="form-label">
+              Имя <span style="color: #DC143C;">*</span>
+              <span class="text-muted" style="cursor: help;" data-bs-toggle="tooltip" data-bs-placement="top" title="Только кириллица">ℹ</span>
+            </label>
+            <input type="text" id="firstName" th:field="*{firstName}" class="form-control" required pattern="^[А-ЯЁа-яё\s-]+$" placeholder="Иван" />
+          </div>
+        </div>
+
+        <div class="mb-3">
+          <label for="middleName" class="form-label">
+            Отчество
+            <span class="text-muted" style="cursor: help;" data-bs-toggle="tooltip" data-bs-placement="top" title="Только кириллица">ℹ</span>
+          </label>
+          <input type="text" id="middleName" th:field="*{middleName}" class="form-control" pattern="^[А-ЯЁа-яё\s-]*$" placeholder="Иванович" />
+        </div>
+
+        <div class="row">
+          <div class="col-md-6 mb-3">
+            <label for="driverLicenseSeries" class="form-label">
+              Серия водительского удостоверения <span style="color: #DC143C;">*</span>
+              <span class="text-muted" style="cursor: help;" data-bs-toggle="tooltip" data-bs-placement="top" title="4 цифры">ℹ</span>
+            </label>
+            <input type="text" id="driverLicenseSeries" th:field="*{driverLicenseSeries}" class="form-control" required pattern="\d{4}" placeholder="1234" />
+          </div>
+
+          <div class="col-md-6 mb-3">
+            <label for="driverLicenseNumber" class="form-label">
+              Номер водительского удостоверения <span style="color: #DC143C;">*</span>
+              <span class="text-muted" style="cursor: help;" data-bs-toggle="tooltip" data-bs-placement="top" title="6 цифр">ℹ</span>
+            </label>
+            <input type="text" id="driverLicenseNumber" th:field="*{driverLicenseNumber}" class="form-control" required pattern="\d{6}" placeholder="123456" />
+          </div>
+        </div>
+
+        <div class="row">
+          <div class="col-md-6 mb-3">
+            <label for="passportSeries" class="form-label">
+              Серия паспорта <span style="color: #DC143C;">*</span>
+              <span class="text-muted" style="cursor: help;" data-bs-toggle="tooltip" data-bs-placement="top" title="4 цифры">ℹ</span>
+            </label>
+            <input type="text" id="passportSeries" th:field="*{passportSeries}" class="form-control" required pattern="\d{4}" placeholder="1234" />
+          </div>
+
+          <div class="col-md-6 mb-3">
+            <label for="passportNumber" class="form-label">
+              Номер паспорта <span style="color: #DC143C;">*</span>
+              <span class="text-muted" style="cursor: help;" data-bs-toggle="tooltip" data-bs-placement="top" title="6 цифр">ℹ</span>
+            </label>
+            <input type="text" id="passportNumber" th:field="*{passportNumber}" class="form-control" required pattern="\d{6}" placeholder="123456" />
+          </div>
+        </div>
+
+        <div class="mb-3">
+          <label for="phone" class="form-label">
+            Телефон <span style="color: #DC143C;">*</span>
+            <span class="text-muted" style="cursor: help;" data-bs-toggle="tooltip" data-bs-placement="top" title="Формат: +79001234567">ℹ</span>
+          </label>
+          <input type="tel" id="phone" th:field="*{phone}" class="form-control" required pattern="\+7\d{10}" placeholder="+79001234567" />
+        </div>
+
+        <div class="mb-3">
+          <label for="birthDate" class="form-label">
+            Дата рождения <span style="color: #DC143C;">*</span>
+            <span class="text-muted" style="cursor: help;" data-bs-toggle="tooltip" data-bs-placement="top" title="Выберите дату рождения">ℹ</span>
+          </label>
+          <input type="date" id="birthDate" th:field="*{birthDate}" class="form-control" required placeholder="дд.мм.гггг" />
+        </div>
+
+        <button type="submit" class="btn btn-udmurt-primary w-100 mb-3">
+          Зарегистрироваться
+        </button>
+
+        <div class="text-center">
+          <p class="text-muted mb-2">Уже есть аккаунт?</p>
+          <a th:href="@{/login}" class="btn btn-udmurt-outline mb-3">
+            Войти
+          </a>
+        </div>
+
+        <div class="text-center">
+          <a th:href="@{/}" class="btn btn-link text-muted">
+            ← Вернуться на главную
+          </a>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+<script>
+  document.addEventListener('DOMContentLoaded', function() {
+    // Initialize Bootstrap tooltips
+    const tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'));
+    tooltipTriggerList.map(function (tooltipTriggerEl) {
+      return new bootstrap.Tooltip(tooltipTriggerEl);
+    });
+
+    // Password confirmation validation
+    const form = document.querySelector('form');
+    const password = document.getElementById('password');
+    const confirmPassword = document.getElementById('confirmPassword');
+
+    function validatePasswords() {
+      if (password.value !== confirmPassword.value) {
+        confirmPassword.setCustomValidity('Пароли не совпадают');
+      } else {
+        confirmPassword.setCustomValidity('');
+      }
+    }
+
+    password.addEventListener('change', validatePasswords);
+    confirmPassword.addEventListener('keyup', validatePasswords);
+
+    form.addEventListener('submit', function(e) {
+      validatePasswords();
+      if (!form.checkValidity()) {
+        e.preventDefault();
+        e.stopPropagation();
+      }
+    });
+  });
+</script>
+</body>
+</html>

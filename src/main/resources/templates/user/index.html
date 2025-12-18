@@ -1,0 +1,431 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="ru">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>ИжДрайв — Добро пожаловать!</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet" />
+    <link rel="stylesheet" th:href="@{/css/styles.css}" />
+    <style>
+        /* Удмуртская цветовая палитра */
+        :root {
+            --udmurt-red: #DC143C;
+            --udmurt-red-dark: #B01030;
+            --udmurt-black: #1a1a1a;
+            --udmurt-white: #ffffff;
+            --udmurt-gray: #f5f5f5;
+        }
+
+        /* Hero Section */
+        .hero-section {
+            background: linear-gradient(135deg, var(--udmurt-black) 0%, #2a2a2a 50%, var(--udmurt-red) 100%);
+            color: white;
+            padding: 100px 0;
+            margin-top: -1px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .hero-section::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+            background: linear-gradient(to right, var(--udmurt-black) 33%, var(--udmurt-white) 33%, var(--udmurt-white) 66%, var(--udmurt-red) 66%);
+        }
+
+        .hero-section h1 {
+            font-size: 3.5rem;
+            font-weight: 700;
+            margin-bottom: 1.5rem;
+            color: white;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+        }
+
+        .hero-section p {
+            font-size: 1.25rem;
+            margin-bottom: 2rem;
+            opacity: 0.95;
+        }
+
+        /* Quick Links Section */
+        .quick-links-section {
+            padding: 80px 0;
+            background-color: var(--udmurt-white);
+        }
+
+        .quick-link-card {
+            background: white;
+            padding: 2rem;
+            border-radius: 12px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+            transition: all 0.3s ease;
+            height: 100%;
+            text-align: center;
+            border: 2px solid transparent;
+        }
+
+        .quick-link-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 20px rgba(220, 20, 60, 0.15);
+            border-color: var(--udmurt-red);
+        }
+
+        .quick-link-icon {
+            font-size: 3rem;
+            margin-bottom: 1rem;
+        }
+
+        .quick-link-card h3 {
+            font-size: 1.25rem;
+            margin-bottom: 1rem;
+            color: var(--udmurt-black);
+        }
+
+        .quick-link-card p {
+            color: #666;
+            margin-bottom: 1.5rem;
+        }
+
+        /* Cities Section */
+        .cities-section {
+            padding: 80px 0;
+            background: var(--udmurt-gray);
+        }
+
+        .cities-section h2 {
+            font-size: 2.5rem;
+            margin-bottom: 3rem;
+            text-align: center;
+            color: var(--udmurt-black);
+        }
+
+        .city-card {
+            background: white;
+            padding: 2rem;
+            border-radius: 12px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+            transition: all 0.3s ease;
+            height: 100%;
+        }
+
+        .city-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 20px rgba(220, 20, 60, 0.15);
+        }
+
+        .city-gerb {
+            height: 100px;
+            width: auto;
+            object-fit: contain;
+        }
+
+        .city-name {
+            font-size: 1.25rem;
+            font-weight: 600;
+            color: var(--udmurt-black);
+            margin-bottom: 0.5rem;
+        }
+
+        .city-address {
+            font-size: 0.95rem;
+            color: #888;
+            margin: 0;
+        }
+
+        /* Footer */
+        .footer {
+            background-color: var(--udmurt-black);
+            color: white;
+            padding: 40px 0 20px;
+        }
+
+        .footer h5 {
+            color: white;
+            font-size: 1.125rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .footer p, .footer a {
+            color: rgba(255, 255, 255, 0.8);
+            text-decoration: none;
+            margin-bottom: 0.5rem;
+        }
+
+        .footer a:hover {
+            color: var(--udmurt-red);
+        }
+
+        .footer-bottom {
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+            margin-top: 2rem;
+            padding-top: 1.5rem;
+            text-align: center;
+            color: rgba(255, 255, 255, 0.6);
+        }
+
+        /* Header Navigation */
+        .landing-navbar {
+            background-color: white;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            padding: 1rem 0;
+            border-bottom: 3px solid var(--udmurt-red);
+        }
+
+        .landing-navbar .navbar-brand {
+            font-size: 1.75rem;
+            font-weight: 700;
+            color: var(--udmurt-black);
+        }
+
+        .landing-navbar .brand-accent {
+            color: var(--udmurt-red);
+        }
+
+        .landing-navbar .nav-link {
+            color: var(--udmurt-black);
+            font-weight: 500;
+            padding: 0.5rem 1rem;
+            transition: color 0.3s ease;
+        }
+
+        .landing-navbar .nav-link:hover {
+            color: var(--udmurt-red);
+        }
+
+        .landing-navbar .nav-link.active {
+            color: var(--udmurt-red);
+        }
+
+        .btn-udmurt-primary {
+            background-color: var(--udmurt-red);
+            color: white;
+            border: none;
+            padding: 0.625rem 1.5rem;
+            border-radius: 6px;
+            font-weight: 500;
+            transition: all 0.3s ease;
+        }
+
+        .btn-udmurt-primary:hover {
+            background-color: var(--udmurt-red-dark);
+            color: white;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(220, 20, 60, 0.3);
+        }
+
+        .btn-udmurt-outline {
+            background-color: transparent;
+            color: var(--udmurt-black);
+            border: 2px solid var(--udmurt-black);
+            padding: 0.625rem 1.5rem;
+            border-radius: 6px;
+            font-weight: 500;
+            transition: all 0.3s ease;
+        }
+
+        .btn-udmurt-outline:hover {
+            background-color: var(--udmurt-black);
+            color: white;
+        }
+    </style>
+</head>
+<body>
+
+<!-- Header Navigation -->
+<nav class="landing-navbar">
+    <div class="container">
+        <div class="d-flex justify-content-between align-items-center">
+            <a class="navbar-brand d-flex align-items-center" th:href="@{/user}">
+                <img th:src="@{/images/logos/Logo_red.svg}" alt="ИжДрайв" style="height: 40px; margin-right: 10px;" />
+                <span><span class="brand-accent">Иж</span>Драйв</span>
+            </a>
+            <div class="d-flex align-items-center">
+                <a class="nav-link active" th:href="@{/user}">Главная</a>
+                <a class="nav-link" th:href="@{/user/cars}">Автомобили</a>
+                <a class="nav-link" th:href="@{/user/rentals/my}">Мои аренды</a>
+                <a class="nav-link" th:href="@{/user/profile/my}">Профиль</a>
+                <a th:href="@{/logout}" class="btn btn-udmurt-outline ms-3">Выход</a>
+            </div>
+        </div>
+    </div>
+</nav>
+
+<!-- Hero Section -->
+<section class="hero-section">
+    <div class="container text-center">
+        <div class="d-flex justify-content-center align-items-center mb-3">
+            <img th:src="@{/images/logos/Logo_white.svg}" alt="ИжДрайв" style="height: 60px; margin-right: 15px;" />
+            <h1 class="mb-0">Добро пожаловать, <span th:text="${userName}">Пользователь</span>!</h1>
+        </div>
+        <p>Выберите автомобиль для аренды в любом городе Удмуртской Республики</p>
+        <div>
+            <a th:href="@{/user/cars}" class="btn btn-light btn-lg me-3">Посмотреть автомобили</a>
+            <a th:href="@{/user/rentals/my}" class="btn btn-outline-light btn-lg">Мои аренды</a>
+        </div>
+    </div>
+</section>
+
+<!-- Quick Links Section -->
+<section class="quick-links-section">
+    <div class="container">
+        <div class="row g-4">
+            <div class="col-md-4">
+                <a th:href="@{/user/cars}" style="text-decoration: none; color: inherit;">
+                    <div class="quick-link-card">
+                        <div class="quick-link-icon">🚗</div>
+                        <h3>Арендовать автомобиль</h3>
+                        <p>Выберите автомобиль из нашего парка и забронируйте его онлайн</p>
+                        <button class="btn btn-udmurt-primary">Посмотреть автомобили</button>
+                    </div>
+                </a>
+            </div>
+            <div class="col-md-4">
+                <a th:href="@{/user/rentals/my}" style="text-decoration: none; color: inherit;">
+                    <div class="quick-link-card">
+                        <div class="quick-link-icon">📋</div>
+                        <h3>Мои аренды</h3>
+                        <p>Просмотрите историю ваших аренд и текущие бронирования</p>
+                        <button class="btn btn-udmurt-primary">Открыть</button>
+                    </div>
+                </a>
+            </div>
+            <div class="col-md-4">
+                <a th:href="@{/user/profile/my}" style="text-decoration: none; color: inherit;">
+                    <div class="quick-link-card">
+                        <div class="quick-link-icon">👤</div>
+                        <h3>Мой профиль</h3>
+                        <p>Просмотрите и отредактируйте свои личные данные</p>
+                        <button class="btn btn-udmurt-primary">Открыть</button>
+                    </div>
+                </a>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Cities Section -->
+<section class="cities-section">
+    <div class="container">
+        <h2>Города выдачи автомобилей</h2>
+        <!-- Первый ряд: 3 карточки -->
+        <div class="row g-4 mb-4">
+            <div class="col-md-4 col-sm-6">
+                <div class="city-card text-center">
+                    <img th:src="@{/images/cities_gerbs/Gerb_Izhevsk.svg}" alt="Герб Ижевска" class="city-gerb mb-3" />
+                    <h5 class="city-name">Ижевск</h5>
+                    <p class="text-muted mb-2">Главный офис</p>
+                    <p class="city-address">ул. Пушкинская, д. 268</p>
+                </div>
+            </div>
+            <div class="col-md-4 col-sm-6">
+                <div class="city-card text-center">
+                    <img th:src="@{/images/cities_gerbs/Gerb_Votkins.png}" alt="Герб Воткинска" class="city-gerb mb-3" />
+                    <h5 class="city-name">Воткинск</h5>
+                    <p class="text-muted mb-2">Пункт выдачи</p>
+                    <p class="city-address">ул. Ленина, д. 15</p>
+                </div>
+            </div>
+            <div class="col-md-4 col-sm-6">
+                <div class="city-card text-center">
+                    <img th:src="@{/images/cities_gerbs/Gerb_Sarapul.png}" alt="Герб Сарапула" class="city-gerb mb-3" />
+                    <h5 class="city-name">Сарапул</h5>
+                    <p class="text-muted mb-2">Пункт выдачи</p>
+                    <p class="city-address">ул. Красная Площадь, д. 8</p>
+                </div>
+            </div>
+        </div>
+        <!-- Второй ряд: 2 карточки по центру -->
+        <div class="row g-4 mb-4 justify-content-center">
+            <div class="col-md-4 col-sm-6">
+                <div class="city-card text-center">
+                    <img th:src="@{/images/cities_gerbs/Gerb_Glazov.png}" alt="Герб Глазова" class="city-gerb mb-3" />
+                    <h5 class="city-name">Глазов</h5>
+                    <p class="text-muted mb-2">Пункт выдачи</p>
+                    <p class="city-address">ул. Кирова, д. 27</p>
+                </div>
+            </div>
+            <div class="col-md-4 col-sm-6">
+                <div class="city-card text-center">
+                    <img th:src="@{/images/cities_gerbs/Gerb_Mozhga.png}" alt="Герб Можги" class="city-gerb mb-3" />
+                    <h5 class="city-name">Можга</h5>
+                    <p class="text-muted mb-2">Пункт выдачи</p>
+                    <p class="city-address">ул. Советская, д. 44</p>
+                </div>
+            </div>
+        </div>
+        <div class="text-center mt-4">
+            <p style="font-size: 1.125rem; color: #555;">
+                <strong>Важно:</strong> Аренда и эксплуатация автомобилей доступна только на территории Удмуртской Республики.
+            </p>
+        </div>
+    </div>
+</section>
+
+<!-- Footer -->
+<footer class="footer">
+    <div class="container">
+        <div class="row">
+            <div class="col-md-4 mb-4">
+                <div class="d-flex align-items-center mb-3">
+                    <img th:src="@{/images/logos/Logo_white.svg}" alt="ИжДрайв" style="height: 35px; margin-right: 12px;" />
+                    <h5 class="mb-0">ИжДрайв</h5>
+                </div>
+                <p style="line-height: 1.6;">Современный сервис аренды автомобилей по всей Удмуртской Республике.</p>
+                <div class="mt-3">
+                    <div class="d-flex align-items-start mb-2">
+                        <img th:src="@{/images/Gerb_Flag_Udmurtii/Flag_Udmurtii.svg}" alt="Флаг Удмуртии" style="height: 24px; width: 36px; margin-right: 12px; margin-top: 2px;" />
+                        <div>
+                            <div><strong>Регион:</strong> Удмуртская Республика</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-md-4 mb-4">
+                <h5 class="mb-3">Контакты</h5>
+                <div class="footer-contacts">
+                    <p class="mb-2"><strong>Email:</strong> info@izhdrive.ru</p>
+                    <p class="mb-2"><strong>Телефон:</strong> +7 (912) 181-18-18</p>
+                    <p class="mb-2"><strong>Адрес:</strong> г. Ижевск, ул. Пушкинская, д. 268</p>
+                </div>
+            </div>
+
+            <div class="col-md-4 mb-4">
+                <h5 class="mb-3">Города обслуживания</h5>
+                <div class="footer-cities">
+                    <div class="d-flex align-items-center mb-2">
+                        <img th:src="@{/images/cities_gerbs/Gerb_Izhevsk.svg}" alt="" style="height: 18px; width: 18px; margin-right: 10px; object-fit: contain;" />
+                        <span>Ижевск (главный офис)</span>
+                    </div>
+                    <div class="d-flex align-items-center mb-2">
+                        <img th:src="@{/images/cities_gerbs/Gerb_Votkins.png}" alt="" style="height: 18px; width: 18px; margin-right: 10px; object-fit: contain;" />
+                        <span>Воткинск</span>
+                    </div>
+                    <div class="d-flex align-items-center mb-2">
+                        <img th:src="@{/images/cities_gerbs/Gerb_Sarapul.png}" alt="" style="height: 18px; width: 18px; margin-right: 10px; object-fit: contain;" />
+                        <span>Сарапул</span>
+                    </div>
+                    <div class="d-flex align-items-center mb-2">
+                        <img th:src="@{/images/cities_gerbs/Gerb_Glazov.png}" alt="" style="height: 18px; width: 18px; margin-right: 10px; object-fit: contain;" />
+                        <span>Глазов</span>
+                    </div>
+                    <div class="d-flex align-items-center mb-2">
+                        <img th:src="@{/images/cities_gerbs/Gerb_Mozhga.png}" alt="" style="height: 18px; width: 18px; margin-right: 10px; object-fit: contain;" />
+                        <span>Можга</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="footer-bottom">
+            <p class="mb-0">&copy; 2025 ИжДрайв. Все права защищены. Удмуртская Республика.</p>
+        </div>
+    </div>
+</footer>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

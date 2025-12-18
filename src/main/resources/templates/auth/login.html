@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="ru">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Вход — ИжДрайв</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet" />
+  <link rel="stylesheet" th:href="@{/css/styles.css}" />
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+</head>
+<body>
+<div class="auth-container">
+  <div class="auth-card card shadow-lg">
+    <div class="card-header text-center text-white">
+      <div class="d-flex justify-content-center align-items-center mb-3">
+        <img th:src="@{/images/logos/Logo_white.svg}" alt="ИжДрайв" style="height: 50px; margin-right: 12px;" />
+        <h3 class="mb-0 text-white">Добро пожаловать в ИжДрайв!</h3>
+      </div>
+      <p class="mb-0 text-white" style="opacity: 0.9;">Войдите в систему аренды автомобилей</p>
+    </div>
+    <div class="card-body">
+      <form th:action="@{/login}" method="post">
+        <div th:if="${error}" class="alert alert-danger"> Неверный email или пароль!</div>
+
+        <div class="mb-4">
+          <label for="username" class="form-label">Email</label>
+          <input type="email" class="form-control" id="username" name="username"
+                 placeholder="example@mail.ru" required autofocus />
+        </div>
+
+        <div class="mb-4">
+          <label for="password" class="form-label">Пароль</label>
+          <input type="password" class="form-control" id="password" name="password"
+                 placeholder="Введите пароль" required />
+        </div>
+
+        <button type="submit" class="btn btn-udmurt-primary w-100 mb-3">
+          Войти
+        </button>
+
+        <div class="text-center">
+          <p class="text-muted mb-2">Нет аккаунта?</p>
+          <a th:href="@{/register}" class="btn btn-udmurt-outline mb-3">
+            Зарегистрироваться
+          </a>
+        </div>
+
+        <div class="text-center">
+          <a th:href="@{/}" class="btn btn-link text-muted">
+            ← Вернуться на главную
+          </a>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>
